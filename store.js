@@ -58,16 +58,27 @@
       body = text;
     }
     if (!res.ok) {
-      const message = (body && body.message) || res.statusText;
+      const message = (body && (body.msg || body.message || body.error_description)) || res.statusText;
       throw Object.assign(new Error(message), { status: res.status, body });
     }
     return body;
   }
 
+  // Persist an auth result. Supabase returns expires_in in seconds.
+  function storeAuth(s, email) {
+    setSession({
+      access_token: s.access_token,
+      refresh_token: s.refresh_token,
+      expires_at: Date.now() + (s.expires_in || 3600) * 1000,
+      user_id: s.user ? s.user.id : null,
+      email: email || (s.user ? s.user.email : null),
+    });
+    return session();
+  }
+
   /* ── catalogue ─────────────────────────────────────────── */
   async function listProducts() {
     if (!configured) return null;
-    // Published products with their artwork and variants, in one call.
     const q =
       "/rest/v1/product?select=id,slug,title,label,summary,kind,presentation,edition," +
       "artwork:artwork_id(slug,title,image_path,detail_path)," +
@@ -88,8 +99,6 @@
   }
 
   /* ── guest checkout ────────────────────────────────────── */
-  // Creates an order + its items. Runs as the anonymous role, so it
-  // relies on the insert-only RLS policies in supabase/schema.sql.
   async function createOrder({ email, name, items }) {
     if (!configured) throw new Error("Supabase is not configured");
     if (!Array.isArray(items) || items.length === 0) throw new Error("No items");
@@ -119,7 +128,31 @@
     return order;
   }
 
-  /* ── auth (admin only) ─────────────────────────────────── */
+  /* ── accounts ──────────────────────────────────────────── */
+  // Registration with email + password. Email confirmation and phone
+  // OTP are disabled in the Supabase dashboard, so this returns a live
+  // session immediately. `phone` is stored unverified — see
+  // supabase/auth-chat.sql "KNOWN LIMITATION".
+  async function signUp({ email, password, phone, displayName }) {
+    if (!configured) throw new Error("Supabase is not configured");
+    const s = await req("/auth/v1/signup", {
+      method: "POST",
+      headers: { apikey: key, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email,
+        password,
+        data: { phone: phone || null, display_name: displayName || null },
+      }),
+    });
+    // No session means confirmation is still switched on server-side.
+    if (!s || !s.access_token) {
+      throw new Error(
+        "Account created, but no session was returned — email confirmation is still enabled in Supabase."
+      );
+    }
+    return storeAuth(s, email);
+  }
+
   async function signIn(email, password) {
     if (!configured) throw new Error("Supabase is not configured");
     const s = await req("/auth/v1/token?grant_type=password", {
@@ -127,19 +160,57 @@
       headers: { apikey: key, "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
     });
-    setSession({
-      access_token: s.access_token,
-      refresh_token: s.refresh_token,
-      expires_at: Date.now() + (s.expires_in || 3600) * 1000,
-      email,
-    });
-    return session();
+    return storeAuth(s, email);
   }
 
   function signOut() {
     setSession(null);
   }
 
+  async function getProfile() {
+    if (!configured) return null;
+    const s = session();
+    if (!s || !s.user_id) return null;
+    const rows = await req(
+      `/rest/v1/profile?select=id,email,phone,display_name,role&id=eq.${s.user_id}&limit=1`,
+      { headers: headers() }
+    );
+    return rows && rows[0] ? rows[0] : null;
+  }
+
+  /* ── chat ──────────────────────────────────────────────── */
+  async function getMyThread() {
+    if (!configured) return null;
+    const s = session();
+    if (!s || !s.user_id) return null;
+    const rows = await req(
+      `/rest/v1/thread?select=id,last_message_at&user_id=eq.${s.user_id}&limit=1`,
+      { headers: headers() }
+    );
+    return rows && rows[0] ? rows[0] : null;
+  }
+
+  async function listMessages(threadId) {
+    if (!configured) return [];
+    return req(
+      `/rest/v1/message?select=id,sender_id,body,created_at&thread_id=eq.${threadId}&order=created_at.asc&limit=200`,
+      { headers: headers() }
+    );
+  }
+
+  async function sendMessage(threadId, body) {
+    if (!configured) throw new Error("Supabase is not configured");
+    const s = session();
+    if (!s || !s.user_id) throw new Error("Not signed in");
+    const [row] = await req("/rest/v1/message?select=id,sender_id,body,created_at", {
+      method: "POST",
+      headers: headers({ Prefer: "return=representation" }),
+      body: JSON.stringify([{ thread_id: threadId, sender_id: s.user_id, body }]),
+    });
+    return row;
+  }
+
+  /* ── admin: orders + chat inbox ────────────────────────── */
   async function listOrders() {
     if (!configured) throw new Error("Supabase is not configured");
     if (!session()) throw new Error("Not signed in");
@@ -149,14 +220,30 @@
     return req(q, { headers: headers() });
   }
 
+  // Admin sees every thread (RLS allows it once role = 'admin').
+  async function listThreads() {
+    if (!configured) throw new Error("Supabase is not configured");
+    const q =
+      "/rest/v1/thread?select=id,last_message_at,user:user_id(id,email,phone,display_name)" +
+      "&order=last_message_at.desc&limit=50";
+    return req(q, { headers: headers() });
+  }
+
   window.MuhsiStore = {
     configured,
     listProducts,
     getProduct,
     createOrder,
+    signUp,
     signIn,
     signOut,
+    getProfile,
     session,
+    getMyThread,
+    listMessages,
+    sendMessage,
+    listOrders,
+    listThreads,
     onAuthChange(fn) {
       listeners.add(fn);
       return () => listeners.delete(fn);
