@@ -16,10 +16,15 @@
    Function, not here.
 
    Leave both values empty to run the site on its built-in
-   static content (the current behaviour) with no network calls.
+   static content with no network calls.
    ============================================================ */
 
+/* Project: klqnhwnvivqnpuxxfyap. The publishable key below is public
+   by design. The matching SECRET key was exposed in a chat transcript
+   and must be rotated in the Supabase dashboard; it must never be
+   pasted into this file. */
+
 window.MUHSI_CONFIG = {
-  supabaseUrl: "",                 // e.g. "https://xxxxxxxx.supabase.co"
-  supabasePublishableKey: "",      // e.g. "sb_publishable_..."
+  supabaseUrl: "https://klqnhwnvivqnpuxxfyap.supabase.co",
+  supabasePublishableKey: "sb_publishable_zIWVVTUXuVt5gEkG4uTOdQ_h_mU6-lH",
 };
