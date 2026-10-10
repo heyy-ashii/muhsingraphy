@@ -1,0 +1,9 @@
+<!-- PLACEHOLDER LOGO — replace this file with the real artwork.
+     Keep the filename `logo.svg`, or update the `src`/`rel` references
+     in the pages. A raster logo works too: save it as `logo.png` and
+     change the references, or give me the file and I will wire it up. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Muhsingraphy">
+  <rect width="64" height="64" fill="#163c3d"/>
+  <text x="32" y="44" text-anchor="middle"
+        font-family="Lora, Georgia, serif" font-size="34" fill="#f7f5ef">m</text>
+</svg>

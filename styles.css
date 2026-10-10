@@ -108,7 +108,10 @@ em { font-style: italic; }
   justify-content: space-between;
   gap: 1.5rem;
 }
-.brand { font-family: var(--f-display); font-size: 32px; line-height: 1.28; color: var(--ink); }
+.brand { display: inline-flex; align-items: center; gap: 0.6rem; font-family: var(--f-display); font-size: 32px; line-height: 1.28; color: var(--ink); }
+.brand__mark { width: 32px; height: 32px; object-fit: contain; flex: none; }
+.brand__word { white-space: nowrap; }
+.admin__brand .admin__mark { width: 32px; height: 32px; object-fit: contain; margin-bottom: 0.6rem; }
 .nav { display: flex; align-items: center; gap: 2rem; }
 .nav a { font-size: 13px; color: var(--ink); border-bottom: 1px solid transparent; }
 .nav a:hover, .nav a[aria-current="page"] { border-color: var(--ink); }
