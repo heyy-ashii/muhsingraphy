@@ -17,30 +17,53 @@
 
   let activeThread = null;
   let pollTimer = null;
+  let live = null;
+  let threads = [];
+  const visibleNow = () => !document.hidden;
 
-  function paintThreads(threads) {
-    const list = $("thread-list");
-    $("chat-count").textContent = threads.length ? `${threads.length} conversation${threads.length === 1 ? "" : "s"}` : "";
-    if (!threads.length) {
-      list.innerHTML = `<p class="meta" style="padding:1rem">No conversations yet.</p>`;
+  function schedulePoll(ms) {
+    if (pollTimer) clearInterval(pollTimer);
+    pollTimer = setInterval(() => {
+      loadThreads();
+      if (activeThread) loadMessages(visibleNow());
+    }, ms);
+  }
+
+  function unreadCount(list) {
+    return list.filter((t) => store.isUnread(t.id, t.last_message_at)).length;
+  }
+
+  function paintThreads(list) {
+    const el = $("thread-list");
+    $("chat-count").textContent = list.length ? `${list.length} conversation${list.length === 1 ? "" : "s"}` : "";
+    const pending = unreadCount(list);
+    const badge = $("chat-unread");
+    if (badge) {
+      badge.hidden = !pending;
+      badge.textContent = pending ? `${pending} awaiting reply` : "";
+    }
+    if (!list.length) {
+      el.innerHTML = `<p class="meta" style="padding:1rem">No conversations yet.</p>`;
       return;
     }
-    list.innerHTML = threads
+    el.innerHTML = list
       .map((t) => {
         const name = (t.user && (t.user.display_name || t.user.email)) || "Customer";
         const on = activeThread && activeThread.id === t.id;
+        const unread = store.isUnread(t.id, t.last_message_at);
+        const marker = unread ? '<span aria-label="awaiting reply" style="display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--amber);margin-right:0.4rem"></span>' : "";
         return `<button data-thread="${esc(t.id)}" style="display:block;width:100%;text-align:left;padding:0.9rem 1rem;border:0;border-bottom:1px solid var(--rule);background:${on ? "var(--paper-2)" : "transparent"};cursor:pointer">
-          <strong style="display:block;font-size:12px;font-weight:500">${esc(name)}</strong>
+          <strong style="display:block;font-size:12px;font-weight:${unread ? "600" : "500"}">${marker}${esc(name)}</strong>
           <span style="font-size:10px;color:var(--sage)">${esc((t.user && t.user.phone) || "")} · ${time(t.last_message_at)}</span>
         </button>`;
       })
       .join("");
-    list.querySelectorAll("[data-thread]").forEach((btn) => {
+    el.querySelectorAll("[data-thread]").forEach((btn) => {
       btn.addEventListener("click", () => selectThread(threads.find((t) => t.id === btn.dataset.thread)));
     });
   }
 
-  function paintMessages(messages, adminId) {
+  function paintMessages(messages, adminId, markRead) {
     const log = $("admin-chat-log");
     if (!messages.length) {
       log.innerHTML = `<p class="meta" style="margin:auto;text-align:center">No messages in this conversation.</p>`;
@@ -58,12 +81,19 @@
       })
       .join("");
     log.scrollTop = log.scrollHeight;
+    // Reading a thread clears its flag, but only while it is on screen.
+    if (markRead && activeThread && messages.length) {
+      store.markSeen(activeThread.id, messages[messages.length - 1].created_at);
+      paintThreads(threads);
+    }
   }
 
   async function loadThreads() {
     try {
-      const threads = await store.listThreads();
-      paintThreads(threads || []);
+      threads = (await store.listThreads()) || [];
+      // Keep the open thread pointing at the refreshed row.
+      if (activeThread) activeThread = threads.find((t) => t.id === activeThread.id) || activeThread;
+      paintThreads(threads);
     } catch (err) {
       console.warn("[muhsi] admin threads unavailable:", err.message);
     }
@@ -75,18 +105,33 @@
     $("admin-chat-input").disabled = false;
     $("admin-chat-form").querySelector('button[type="submit"]').disabled = false;
     await loadThreads();
-    await loadMessages();
+    await loadMessages(true);
   }
 
-  async function loadMessages() {
+  async function loadMessages(markRead) {
     if (!activeThread) return;
     const adminId = store.session()?.user_id;
     try {
       const messages = await store.listMessages(activeThread.id);
-      paintMessages(messages || [], adminId);
+      paintMessages(messages || [], adminId, sheetVisible() && markRead !== false);
     } catch (err) {
       console.warn("[muhsi] messages unavailable:", err.message);
     }
+  }
+
+  function sheetVisible() {
+    const panel = $("admin-chat");
+    return visibleNow() && panel && !panel.hidden;
+  }
+
+  function goLive() {
+    if (live || !store.channel) return;
+    live = store.channel();
+    live.onStatus((mode) => schedulePoll(mode === "live" ? 30000 : 6000));
+    live.subscribe("message", () => {
+      loadThreads();
+      if (activeThread) loadMessages(false);
+    });
   }
 
   $("admin-chat-form").addEventListener("submit", async (e) => {
@@ -100,12 +145,18 @@
     input.value = "";
     try {
       await store.sendMessage(activeThread.id, body);
-      await loadMessages();
+      await loadMessages(true);
       await loadThreads();
     } catch (ex) {
       if (err) err.textContent = ex.message || "Reply could not be sent.";
       input.value = body;
     }
+  });
+
+  document.addEventListener("visibilitychange", () => {
+    if (!visibleNow()) return;
+    loadThreads();
+    if (activeThread) loadMessages(true);
   });
 
   async function boot() {
@@ -122,14 +173,17 @@
       return;
     }
     await loadThreads();
-    pollTimer = setInterval(() => {
-      loadThreads();
-      if (activeThread) loadMessages();
-    }, 6000);
+    goLive();
+    schedulePoll(6000);
   }
 
   store.onAuthChange(() => {
     if (pollTimer) clearInterval(pollTimer);
+    if (live) {
+      live.close();
+      live = null;
+    }
+    activeThread = null;
     boot();
   });
   boot();

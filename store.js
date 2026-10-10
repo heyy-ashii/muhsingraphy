@@ -178,6 +178,56 @@
     return rows && rows[0] ? rows[0] : null;
   }
 
+  /* ── read markers ──────────────────────────────────────────
+     "Unread" is derived, not stored: we remember the timestamp of the
+     last message each user has already seen, per thread, in
+     localStorage. A message is unread when its created_at is newer
+     than that mark. Nothing here is authoritative — a second device
+     starts with its own marks — so it is kept out of the database. */
+  const SEEN_KEY = "muhsi.seen";
+  const SEEN_CAP = 200; // keep the marks touched most recently
+
+  function seenMap() {
+    try {
+      const raw = JSON.parse(localStorage.getItem(SEEN_KEY) || "{}");
+      const out = {};
+      for (const [id, record] of Object.entries(raw)) {
+        if (record && record.at) out[id] = record;
+      }
+      return out;
+    } catch {
+      return {};
+    }
+  }
+
+  /* Pruned by least-recently-touched rather than by age. Age-based
+     expiry looked tidy but made old, long-since-read threads show up
+     as awaiting reply again, which is worse than a bounded cache. */
+  function markSeen(threadId, iso) {
+    if (!threadId || !iso) return;
+    try {
+      const map = seenMap();
+      const now = new Date().toISOString();
+      map[threadId] = { at: iso, touched: now };
+      const ids = Object.keys(map);
+      if (ids.length > SEEN_CAP) {
+        ids
+          .sort((a, b) => Date.parse(map[b].touched || 0) - Date.parse(map[a].touched || 0))
+          .slice(SEEN_CAP)
+          .forEach((id) => delete map[id]);
+      }
+      localStorage.setItem(SEEN_KEY, JSON.stringify(map));
+    } catch {
+      /* storage disabled (private mode) — unread badges simply stay off */
+    }
+  }
+
+  function isUnread(threadId, iso) {
+    if (!threadId || !iso) return false;
+    const record = seenMap()[threadId];
+    return !record || Date.parse(iso) > Date.parse(record.at);
+  }
+
   /* ── chat ──────────────────────────────────────────────── */
   async function getMyThread() {
     if (!configured) return null;
@@ -229,6 +279,142 @@
     return req(q, { headers: headers() });
   }
 
+  /* ── realtime (optional upgrade) ───────────────────────────
+     Live inserts via Supabase Realtime over a raw WebSocket, so the
+     site keeps its no-dependency guarantee. This only fires if the
+     tables are published for realtime (see supabase/realtime.sql);
+     otherwise the socket reports an error and callers fall back to
+     their timer. onStatus gets one of "live" | "down" so the UI can
+     say which mode it is in. */
+  function channel() {
+    if (!configured) return { close() {}, onStatus() {} };
+    const statusListeners = new Set();
+    const tableListeners = new Map(); // name -> Set<fn>
+    let ws = null;
+    let heartbeat = null;
+    let ref = 0;
+    let retry = 0;
+    let lastError = null;
+
+    const wsUrl =
+      url.replace(/^http/, "ws") + `/realtime/v1/websocket?apikey=${encodeURIComponent(key)}&vsn=1.0.0`;
+
+    function setStatus(mode) {
+      statusListeners.forEach((fn) => fn(mode));
+    }
+
+    function send(topic, event, payload) {
+      ref += 1;
+      ws.send(JSON.stringify({ topic, event, payload, ref: String(ref) }));
+    }
+
+    function connect() {
+      let socket;
+      try {
+        socket = new WebSocket(wsUrl);
+      } catch {
+        return; // no WebSocket — timers carry on
+      }
+      ws = socket;
+
+      socket.onopen = () => {
+        const token = (session() || {}).access_token || key;
+        send("realtime:public", "phx_join", {
+          config: {
+            postgres_changes: [...tableListeners.keys()].map((table) => ({
+              event: "INSERT",
+              schema: "public",
+              table,
+            })),
+          },
+          access_token: token,
+        });
+      };
+
+      socket.onmessage = (event) => {
+        let msg;
+        try {
+          msg = JSON.parse(event.data);
+        } catch {
+          return;
+        }
+        const payload = msg.payload || {};
+        const topic = msg.topic || "";
+
+        if (msg.event === "phx_reply") {
+          const ok = payload.status === "ok";
+          const detail = JSON.stringify(payload.response || {});
+          // A successful join can still carry a per-table subscription
+          // error (e.g. table not in the realtime publication).
+          if (ok && !/error/i.test(detail)) {
+            retry = 0;
+            setStatus("live");
+          } else {
+            lastError = (payload.response && payload.response.message) || "subscription rejected";
+            setStatus("down");
+            socket.close();
+          }
+          return;
+        }
+        if (msg.event === "system" && payload.status === "error") {
+          lastError = payload.message || "realtime error";
+          setStatus("down");
+          return;
+        }
+        if (msg.event === "postgres_changes") {
+          const table = (payload.table || topic.split(":").pop() || "").trim();
+          const handlers = tableListeners.get(table);
+          if (handlers) handlers.forEach((fn) => fn(payload.record || payload.new || {}));
+        }
+      };
+
+      socket.onclose = () => {
+        if (heartbeat) {
+          clearInterval(heartbeat);
+          heartbeat = null;
+        }
+        if (!tableListeners.size) return;
+        retry += 1;
+        setTimeout(connect, Math.min(1000 * 2 ** retry, 30000));
+      };
+
+      socket.onerror = () => {
+        setStatus("down");
+      };
+
+      if (!heartbeat) {
+        heartbeat = setInterval(() => {
+          if (ws && ws.readyState === 1) send("phoenix", "heartbeat", {});
+        }, 30000);
+      }
+    }
+
+    return {
+      subscribe(table, fn) {
+        if (!tableListeners.has(table)) {
+          tableListeners.set(table, new Set());
+          if (ws && ws.readyState === 1) connect(); // rejoin with the new table
+          else if (!ws) connect();
+        }
+        tableListeners.get(table).add(fn);
+      },
+      onStatus(fn) {
+        statusListeners.add(fn);
+      },
+      status() {
+        return lastError ? "down" : ws && ws.readyState === 1 ? "live" : "down";
+      },
+      close() {
+        tableListeners.clear();
+        if (heartbeat) clearInterval(heartbeat);
+        if (ws) {
+          ws.onclose = null;
+          ws.close();
+        }
+      },
+    };
+  }
+
   window.MuhsiStore = {
     configured,
     listProducts,
@@ -242,6 +428,9 @@
     getMyThread,
     listMessages,
     sendMessage,
+    markSeen,
+    isUnread,
+    channel,
     listOrders,
     listThreads,
     onAuthChange(fn) {
