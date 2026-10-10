@@ -85,8 +85,29 @@
   /* ── chat ──────────────────────────────────────────────── */
   let thread = null;
   let pollTimer = null;
+  let live = null;
+  const baseTitle = document.title;
 
-  function paint(messages, meId) {
+  const visibleNow = () => !document.hidden;
+
+  function schedulePoll(ms) {
+    if (pollTimer) clearInterval(pollTimer);
+    pollTimer = setInterval(loadThread, ms);
+  }
+
+  function setBadge(on) {
+    const badge = $("chat-badge");
+    if (badge) badge.hidden = !on;
+    document.title = on ? `● ${baseTitle}` : baseTitle;
+  }
+
+  function setStatus(mode) {
+    const el = $("chat-status");
+    if (!el) return;
+    el.textContent = mode === "live" ? "Live — messages appear as they are sent." : "";
+  }
+
+  function paint(messages, meId, markRead) {
     const log = $("chat-log");
     if (!messages.length) {
       log.innerHTML = `<p class="meta" style="margin:auto;text-align:center">No messages yet. Say hello.</p>`;
@@ -104,6 +125,10 @@
       })
       .join("");
     log.scrollTop = log.scrollHeight;
+    if (!markRead) return;
+    const newest = messages[messages.length - 1];
+    if (newest) store.markSeen(thread.id, newest.created_at);
+    setBadge(false);
   }
 
   async function loadThread() {
@@ -117,10 +142,27 @@
       }
       thread = t;
       const messages = await store.listMessages(t.id);
-      paint(messages, me.user_id);
+      // Only treat a message as seen when the reader is actually looking.
+      const markRead = visibleNow() && !accountSection.hidden;
+      paint(messages, me.user_id, markRead);
+      // Studio replied and the reader is elsewhere — surface it.
+      if (!markRead && store.isUnread(t.id, t.last_message_at)) setBadge(true);
     } catch (err) {
       console.warn("[muhsi] chat unavailable:", err.message);
     }
+  }
+
+  // A realtime push just refreshes from the API: one code path, and the
+  // round trip is what proves the row is really there and visible to RLS.
+  function goLive() {
+    if (live || !store.channel) return;
+    live = store.channel();
+    live.onStatus((mode) => {
+      setStatus(mode);
+      // Live pushes make the timer redundant; keep a slow safety net.
+      schedulePoll(mode === "live" ? 30000 : 5000);
+    });
+    live.subscribe("message", () => loadThread());
   }
 
   $("chat-form").addEventListener("submit", async (e) => {
@@ -144,6 +186,13 @@
     }
   });
 
+  document.addEventListener("visibilitychange", () => {
+    if (visibleNow() && !accountSection.hidden && thread) {
+      setBadge(false);
+      loadThread();
+    }
+  });
+
   /* ── render ────────────────────────────────────────────── */
   async function render() {
     const me = store.session();
@@ -155,7 +204,15 @@
       clearInterval(pollTimer);
       pollTimer = null;
     }
-    if (!signedIn) return;
+    if (!signedIn) {
+      if (live) {
+        live.close();
+        live = null;
+      }
+      thread = null;
+      setBadge(false);
+      return;
+    }
 
     let profile = null;
     try {
@@ -184,8 +241,10 @@
     }
 
     await loadThread();
-    // Realtime is an upgrade path; polling keeps this dependency-free.
-    pollTimer = setInterval(loadThread, 5000);
+    goLive();
+    // Realtime is the fast path; this timer is the safety net when it is
+    // unavailable (tables not published, socket blocked, offline).
+    schedulePoll(5000);
   }
 
   store.onAuthChange(render);

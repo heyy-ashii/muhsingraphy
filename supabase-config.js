@@ -26,5 +26,5 @@
 
 window.MUHSI_CONFIG = {
   supabaseUrl: "https://klqnhwnvivqnpuxxfyap.supabase.co",
-  supabasePublishableKey: "sb_publishable_zIWVVTUXuVt5gEkG4uTOdQ_h_mU6-lH",
+  supabasePublishableKey: "sb_publishable_F-o-wxS3SD5C-qg_n688vA__dzaH5fB",
 };

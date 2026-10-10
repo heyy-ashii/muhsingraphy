@@ -116,7 +116,7 @@
 
       <div class="related__grid" style="margin-top:2.5rem;align-items:start">
         <div>
-          <span class="label">Message the studio</span>
+          <span class="label">Message the studio <span id="chat-badge" hidden style="margin-left:0.5rem;background:var(--ink);color:var(--on-ink);padding:0.15rem 0.5rem;font-size:10px">new reply</span></span>
           <h2 class="display h4" style="margin:0.7rem 0 1rem">Ask about a work.</h2>
           <p class="lead">Questions about materials, framing, sizing or commissions — the artist replies here.</p>
 
@@ -128,6 +128,7 @@
               <button class="btn btn--solid" type="submit">Send</button>
             </form>
             <p class="note" data-error style="color:var(--amber);margin-top:0.7rem"></p>
+            <p class="note" id="chat-status" style="margin-top:0.7rem"></p>
           </div>
         </div>
         <aside class="panel" style="background:var(--paper-2);border:0;padding:1.75rem">
