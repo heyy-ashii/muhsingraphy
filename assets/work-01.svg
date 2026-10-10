@@ -1,8 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" role="img">
-  <rect width="800" height="1000" fill="#f6f5ee"/>
-  <rect x="90" y="90" width="620" height="820" fill="none" stroke="#0f0d0c" stroke-width="2"/>
-  <path d="M90 700 C260 520 540 520 710 700" fill="none" stroke="#0f0d0c" stroke-width="10"/>
-  <circle cx="400" cy="330" r="120" fill="#0f0d0c"/>
-  <text x="90" y="880" font-family="Arial Narrow, sans-serif" font-weight="bold" font-size="64" fill="#0f0d0c" letter-spacing="2">AXION</text>
-  <text x="92" y="920" font-family="monospace" font-size="22" fill="#8d8a82">brand identity / 01</text>
-</svg>

@@ -3,194 +3,324 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>muhsingraphy — The quiet power of a single stroke.</title>
-  <meta name="description" content="muhsingraphy — graphic design, brand identity and typography." />
-
+  <title>Muhsingraphy — Calligraphy &amp; Art</title>
+  <meta name="description" content="Expressive calligraphy and fine-art prints. A portfolio and collection preview by Muhsingraphy." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Anton&family=Manrope:wght@400;500;600;800&family=Space+Mono:wght@400;700&display=swap"
-    rel="stylesheet"
-  />
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <!-- ── top bar ─────────────────────────────────────────── -->
-  <header class="topbar">
-    <a class="wordmark" href="#top">muhsingraphy</a>
-    <nav class="topbar__nav">
-      <a href="#work">work</a>
-      <a href="#studio">studio</a>
-      <a href="#contact">contact</a>
-    </nav>
-    <a class="topbar__status" href="#contact">
-      <span class="dot"></span>available&nbsp;for&nbsp;work
-    </a>
+  <a class="skip" href="#main" style="position:absolute;left:-9999px">Skip to content</a>
+
+  <!-- ── header ─────────────────────────────────────────── -->
+  <header class="site-header">
+    <div class="site-header__inner">
+      <a class="brand" href="index.html">Muhsingraphy</a>
+      <nav class="nav" aria-label="Primary">
+        <a href="#work">Artwork</a>
+        <a href="shop.html">Shop</a>
+        <a href="#artist" class="hide-sm">Artist &amp; materials</a>
+        <a class="cart" href="shop.html">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
+            <path d="M4 7h16l-1.5 12h-13L4 7Z"/><path d="M9 7a3 3 0 0 1 6 0"/>
+          </svg>
+          Cart (0)
+        </a>
+      </nav>
+    </div>
   </header>
 
-  <main id="top">
+  <main id="main">
     <!-- ── hero ──────────────────────────────────────────── -->
-    <section class="hero">
-      <div class="hero__label reveal">
-        <span class="mono">graphic&nbsp;design</span>
-        <span class="mono">/&nbsp;brand&nbsp;identity</span>
-        <span class="mono">/&nbsp;typography</span>
-      </div>
-
+    <section class="hero wrap">
       <div class="hero__grid">
-        <h1 class="hero__title reveal">
-          The quiet<br />
-          power of a<br />
-          single <em>stroke.</em>
-        </h1>
-
-        <figure class="hero__mark reveal" aria-hidden="true">
-          <div class="hero__mark-inner">
-            <span>m</span>
+        <div class="hero__copy reveal">
+          <span class="label">Muhsingraphy / Calligraphy &amp; Art</span>
+          <h1 class="display h1 hero__title">The quiet power of a single stroke.</h1>
+          <p class="lead hero__desc">
+            Expressive calligraphy. Rich surfaces. A conversation between the
+            mark and the space it leaves behind.
+          </p>
+          <div class="hero__actions">
+            <a class="btn btn--solid" href="#work">
+              Discover the artwork
+              <svg class="arrow" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M1 5h8M5 1l4 4-4 4"/></svg>
+            </a>
+            <a class="link" href="shop.html">Explore original &amp; print ↗</a>
           </div>
-          <figcaption class="mono">fig.&nbsp;00 — mark</figcaption>
+        </div>
+        <figure class="hero__art reveal">
+          <img src="assets/artwork.jpg" alt="Supplied calligraphy artwork — a dark, sweeping form on a richly textured ground" />
+          <figcaption class="hero__caption">
+            <span class="note">A STUDY IN STROKE &amp; SURFACE</span>
+            <span class="note">Supplied artwork / full composition</span>
+          </figcaption>
         </figure>
       </div>
-
-      <p class="hero__lede reveal">
-        I'm a graphic designer building brand systems, type and print that
-        say more with less — used by people who'd rather be remembered than
-        noticed.
-      </p>
     </section>
 
-    <!-- ── ticker ────────────────────────────────────────── -->
-    <div class="ticker" aria-hidden="true">
-      <div class="ticker__track">
-        <span>brand identity</span><span>*</span><span>typography</span><span>*</span>
-        <span>poster&nbsp;&&nbsp;print</span><span>*</span><span>packaging</span><span>*</span>
-        <span>art direction</span><span>*</span><span>brand identity</span><span>*</span>
-        <span>typography</span><span>*</span><span>poster&nbsp;&&nbsp;print</span><span>*</span>
-        <span>packaging</span><span>*</span><span>art direction</span><span>*</span>
-      </div>
-    </div>
-
-    <!-- ── work ──────────────────────────────────────────── -->
-    <section class="work" id="work">
-      <div class="work__head">
-        <span class="mono">01</span>
-        <h2 class="work__title">Selected&nbsp;work</h2>
-        <span class="mono work__count">— 05 projects</span>
-      </div>
-
-      <div class="work__layout">
-        <!-- numbered index -->
-        <ol class="index">
-          <li class="index__item reveal" data-goto="p1">
-            <span class="mono index__num">01</span>
-            <span class="index__name">axion</span>
-            <span class="mono index__cat">identity</span>
-          </li>
-          <li class="index__item reveal" data-goto="p2">
-            <span class="mono index__num">02</span>
-            <span class="index__name">mono</span>
-            <span class="mono index__cat">poster&nbsp;series</span>
-          </li>
-          <li class="index__item reveal" data-goto="p3">
-            <span class="mono index__num">03</span>
-            <span class="index__name">bloom</span>
-            <span class="mono index__cat">packaging</span>
-          </li>
-          <li class="index__item reveal" data-goto="p4">
-            <span class="mono index__num">04</span>
-            <span class="index__name">nightline</span>
-            <span class="mono index__cat">visual&nbsp;system</span>
-          </li>
-          <li class="index__item reveal" data-goto="p5">
-            <span class="mono index__num">05</span>
-            <span class="index__name">orbit</span>
-            <span class="mono index__cat">campaign</span>
-          </li>
-        </ol>
-
-        <!-- project grid -->
-        <div class="projects">
-          <article class="project reveal" id="p1">
-            <div class="project__media"><img src="assets/work-01.svg" alt="axion — brand identity" loading="lazy" /></div>
-            <div class="project__cap"><span class="mono">01</span><h3>axion</h3><span class="mono">2025</span></div>
-          </article>
-          <article class="project reveal" id="p2">
-            <div class="project__media"><img src="assets/work-02.svg" alt="mono — poster series" loading="lazy" /></div>
-            <div class="project__cap"><span class="mono">02</span><h3>mono</h3><span class="mono">2025</span></div>
-          </article>
-          <article class="project reveal" id="p3">
-            <div class="project__media"><img src="assets/work-03.svg" alt="bloom — packaging" loading="lazy" /></div>
-            <div class="project__cap"><span class="mono">03</span><h3>bloom</h3><span class="mono">2024</span></div>
-          </article>
-          <article class="project reveal" id="p4">
-            <div class="project__media"><img src="assets/work-04.svg" alt="nightline — visual system" loading="lazy" /></div>
-            <div class="project__cap"><span class="mono">04</span><h3>nightline</h3><span class="mono">2024</span></div>
-          </article>
-          <article class="project project--wide reveal" id="p5">
-            <div class="project__media"><img src="assets/work-05.svg" alt="orbit — campaign" loading="lazy" /></div>
-            <div class="project__cap"><span class="mono">05</span><h3>orbit</h3><span class="mono">2023</span></div>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <!-- ── studio / statement ────────────────────────────── -->
-    <section class="studio" id="studio">
-      <div class="studio__head">
-        <span class="mono">02</span>
-        <h2 class="work__title">Studio</h2>
-      </div>
-      <div class="studio__body">
-        <p class="studio__statement reveal">
-          A practice built on <em>restraint</em> — finding the one line,
-          the one mark, the one typeface that carries the whole idea.
+    <!-- ── editorial statement ───────────────────────────── -->
+    <section class="statement wrap">
+      <hr class="rule" />
+      <div class="statement__grid">
+        <span class="label">The art of looking closer</span>
+        <p class="display h3">
+          A line can hold movement. A surface can hold memory. Together, they
+          invite a slower kind of looking.
         </p>
-        <div class="studio__cols">
-          <div class="studio__col reveal">
-            <span class="mono">approach</span>
-            <p>Start with the idea, never the filter. Every shape earns its place or it leaves.</p>
-          </div>
-          <div class="studio__col reveal">
-            <span class="mono">services</span>
-            <p>Brand identity, typography, poster &amp; print, packaging, art direction.</p>
-          </div>
-          <div class="studio__col reveal">
-            <span class="mono">working</span>
-            <p>Available for freelance and select collaborations worldwide.</p>
-          </div>
+      </div>
+      <hr class="rule" />
+    </section>
+
+    <!-- ── featured artwork ──────────────────────────────── -->
+    <section class="section section--ground wrap" id="work">
+      <div class="sec-head">
+        <h2 class="display h2">A composition to return to.</h2>
+        <span class="label">Featured / Supplied artwork</span>
+      </div>
+      <div class="featured__grid">
+        <div class="reveal"><img src="assets/artwork.jpg" alt="Full composition of the supplied calligraphy artwork" /></div>
+        <div class="featured__copy reveal">
+          <span class="label">Form, held in balance</span>
+          <h3 class="display h3">Movement in ink. Stillness in space.</h3>
+          <p class="lead">
+            Dark, sweeping forms meet a richly textured ground. The eye follows
+            each curve, then rests in the openness around it.
+          </p>
+          <p class="meta">One artwork, presented as an original and a conceptual print offering.</p>
+          <a class="btn btn--outline" href="original-calligraphy.html" style="margin-top:1.5rem">
+            View original calligraphy
+            <svg class="arrow" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M1 5h8M5 1l4 4-4 4"/></svg>
+          </a>
         </div>
-        <span class="studio__mark" aria-hidden="true">*</span>
+      </div>
+    </section>
+
+    <!-- ── ways to collect ───────────────────────────────── -->
+    <section class="section section--paper2" id="collect">
+      <div class="wrap">
+        <div class="sec-head">
+          <div>
+            <span class="label">Ways to collect</span>
+            <h2 class="display h2">One composition. Two expressions.</h2>
+          </div>
+          <a class="link" href="shop.html">View the collection ↗</a>
+        </div>
+        <p class="note" style="margin-top:1.5rem">Preview collection · sample pricing in USD · Specifications to be confirmed</p>
+
+        <div class="offerings">
+          <article class="offering reveal">
+            <div class="offering__frame offering__frame--a">
+              <img src="assets/artwork.jpg" alt="Original calligraphy — the source artwork" />
+            </div>
+            <div class="offering__meta">
+              <div>
+                <span class="label">The original</span>
+                <h3 class="display h4">Original calligraphy</h3>
+              </div>
+              <span class="price">$450</span>
+            </div>
+            <p class="lead offering__desc">The source artwork. Explore its surface, gesture and individual marks.</p>
+            <a class="link" href="original-calligraphy.html">Explore the original ↗</a>
+          </article>
+
+          <article class="offering reveal">
+            <div class="offering__frame offering__frame--b">
+              <img src="assets/artwork.jpg" alt="Fine-art print — the same composition, considered for print" />
+            </div>
+            <div class="offering__meta">
+              <div>
+                <span class="label">The print</span>
+                <h3 class="display h4">Fine-art print</h3>
+              </div>
+              <span class="price">From $65</span>
+            </div>
+            <p class="lead offering__desc">The same composition, considered for a print. Choose a size for your space.</p>
+            <a class="link" href="fine-art-print.html">Explore the print ↗</a>
+          </article>
+        </div>
+        <hr class="rule" style="margin-top:3rem" />
+      </div>
+    </section>
+
+    <!-- ── closer look ───────────────────────────────────── -->
+    <section class="closer">
+      <div class="wrap closer__grid">
+        <div class="reveal"><img src="assets/artwork.jpg" alt="Detail crop of the supplied artwork" /></div>
+        <div class="reveal">
+          <span class="label">A closer look / Detail</span>
+          <h2 class="display h3 closer__title">Where the stroke meets the surface.</h2>
+          <p class="lead">
+            A curve gathers weight, an edge tapers away. Up close, the textured
+            ground becomes part of the composition.
+          </p>
+          <hr class="closer__rule" />
+          <div class="observations">
+            <div>
+              <h4>Gesture</h4>
+              <p>Broad curves and delicate endings.</p>
+            </div>
+            <div>
+              <h4>Texture</h4>
+              <p>A surface that rewards a second look.</p>
+            </div>
+          </div>
+          <span class="note">Detail crop of the supplied artwork.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── about the artist ──────────────────────────────── -->
+    <section class="section wrap" id="artist">
+      <div class="guide__grid">
+        <div>
+          <span class="label">About Muhsingraphy</span>
+          <h2 class="display h3" style="margin-top:0.9rem">A practice in line, space and texture.</h2>
+        </div>
+        <div class="reveal">
+          <p class="lead">
+            Meet Muhsingraphy through the work: expressive forms, a textured
+            surface and a careful relationship between movement and stillness.
+          </p>
+          <p class="lead" style="margin-top:1.5rem">
+            This portfolio begins with a single composition. Its sweeping marks
+            offer a way into the practice, while its quiet spaces leave room for
+            your own looking.
+          </p>
+          <p class="meta" style="margin-top:1.5rem">Artist introduction preview · Biography and studio story to be added with the artist.</p>
+          <a class="btn btn--outline" href="#contact" style="margin-top:1.5rem">
+            Connect with the artist
+            <svg class="arrow" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M1 5h8M5 1l4 4-4 4"/></svg>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── materials ─────────────────────────────────────── -->
+    <section class="section wrap">
+      <hr class="rule" />
+      <div class="sec-head" style="padding-top:2.5rem">
+        <h2 class="display h2" style="font-size:clamp(1.8rem,2.8vw,2.5rem)">The language of materials.</h2>
+        <span class="meta">Materials and specifications to be confirmed</span>
+      </div>
+      <div class="materials">
+        <div class="material reveal">
+          <h3>The mark-making tool</h3>
+          <p>Pen, brush or another instrument: the tool shapes the edge and rhythm of a line.</p>
+          <span class="note">Tool and nib / brush details to be confirmed.</span>
+        </div>
+        <div class="material reveal">
+          <h3>The colour medium</h3>
+          <p>Dense, dark strokes create a striking contrast with the pale, textured surface.</p>
+          <span class="note">Ink / pigment and application to be confirmed.</span>
+        </div>
+        <div class="material reveal">
+          <h3>The textured ground</h3>
+          <p>The visible surface gives the composition another rhythm, quieter than the strokes.</p>
+          <span class="note">Support, preparation and finish to be confirmed.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── collecting guide ──────────────────────────────── -->
+    <section class="section section--paper2">
+      <div class="wrap guide__grid">
+        <div class="guide__intro">
+          <span class="label">A note on collecting</span>
+          <h2 class="display h2">Find your way into the work.</h2>
+          <p class="lead">Begin with the composition. Then consider the format, the scale and where it might live.</p>
+        </div>
+        <div>
+          <div class="format reveal">
+            <h3>Original calligraphy</h3>
+            <span class="price">$450</span>
+          </div>
+          <p class="format__note">For a connection to the source artwork and its physical surface.</p>
+          <div class="format reveal" style="margin-top:1.5rem">
+            <h3>Fine-art print</h3>
+            <span class="price">From $65</span>
+          </div>
+          <p class="format__note">For the same visual composition in a choice of proposed sizes.</p>
+          <p class="note" style="margin-top:1.5rem">Concept offerings · sample pricing in USD</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── FAQ ───────────────────────────────────────────── -->
+    <section class="section wrap faq__grid">
+      <div class="faq__intro">
+        <span class="label">Before you collect</span>
+        <h2 class="display h2">A few things worth knowing.</h2>
+        <p class="lead">A clear view of the work, and of the details still to come.</p>
+      </div>
+      <div>
+        <div class="faq__item is-open">
+          <button class="faq__q" aria-expanded="true">What is available in this preview?<span class="faq__sign">−</span></button>
+          <div class="faq__a"><p>Two conceptual offerings based on the supplied artwork: Original calligraphy and Fine-art print. Prices, sizes and materials are samples, pending artist confirmation.</p></div>
+        </div>
+        <div class="faq__item">
+          <button class="faq__q" aria-expanded="false">How will the work be delivered?<span class="faq__sign">+</span></button>
+          <div class="faq__a"><p>Delivery costs, timing and packaging are to be confirmed with the artist before purchase. No shipping terms are established in this preview.</p></div>
+        </div>
+        <div class="faq__item">
+          <button class="faq__q" aria-expanded="false">What is the returns process?<span class="faq__sign">+</span></button>
+          <div class="faq__a"><p>Return eligibility, timeframes and the contact process are to be confirmed. No returns policy is established in this preview.</p></div>
+        </div>
+        <div class="faq__item">
+          <button class="faq__q" aria-expanded="false">Can I ask about the artwork?<span class="faq__sign">+</span></button>
+          <div class="faq__a"><p>Yes — questions about the work, its materials or choosing a format are welcome. Use the contact link below to reach the artist.</p></div>
+        </div>
+        <p class="meta faq__foot">Delivery costs, timing and returns terms will be confirmed before purchase.</p>
+      </div>
+    </section>
+
+    <!-- ── enquiry ───────────────────────────────────────── -->
+    <section class="enquiry" id="contact">
+      <div class="wrap enquiry__grid">
+        <div class="enquiry__copy">
+          <span class="label">Continue the conversation</span>
+          <h2>Something caught your eye?</h2>
+          <p class="lead">Get in touch about the artwork, its materials or choosing a format.</p>
+        </div>
+        <a class="btn btn--solid" href="mailto:hello@muhsingraphy.com">
+          Contact the artist
+          <svg class="arrow" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M1 5h8M5 1l4 4-4 4"/></svg>
+        </a>
       </div>
     </section>
   </main>
 
-  <!-- ── footer ──────────────────────────────────────────── -->
-  <footer class="footer" id="contact">
-    <div class="footer__cta">
-      <span class="mono footer__kicker">got a project?</span>
-      <a class="footer__mail" href="mailto:hello@muhsingraphy.com">
-        let's&nbsp;talk&nbsp;→
-      </a>
-    </div>
-    <div class="footer__grid">
-      <div>
-        <span class="mono">say&nbsp;hi</span>
-        <a href="mailto:hello@muhsingraphy.com">hello@muhsingraphy.com</a>
+  <!-- ── footer ─────────────────────────────────────────── -->
+  <footer class="footer">
+    <div class="wrap">
+      <div class="footer__grid">
+        <div>
+          <p class="footer__brand">Muhsingraphy</p>
+          <p class="footer__pitch">Calligraphy to spend time with. A study in gesture, texture and the space between.</p>
+        </div>
+        <div>
+          <h4>Explore</h4>
+          <ul>
+            <li><a href="#work">Artwork</a></li>
+            <li><a href="shop.html">Shop the collection</a></li>
+            <li><a href="#artist">Artist &amp; materials</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Connect</h4>
+          <ul>
+            <li><a href="https://www.instagram.com/muhsingraphy" target="_blank" rel="noopener">Instagram ↗</a></li>
+            <li><a href="mailto:hello@muhsingraphy.com">Contact the artist ↗</a></li>
+          </ul>
+          <p class="fine">For artwork questions and collection enquiries.</p>
+        </div>
       </div>
-      <div>
-        <span class="mono">elsewhere</span>
-        <a href="https://www.instagram.com/muhsingraphy" target="_blank" rel="noopener">instagram</a>
-        <a href="#" aria-disabled="true">behance</a>
-        <a href="#" aria-disabled="true">dribbble</a>
+      <hr class="footer__rule" />
+      <div class="footer__base">
+        <span>© Muhsingraphy · Portfolio &amp; collection preview</span>
+        <span>Sample catalog &amp; pricing · Details subject to artist confirmation</span>
       </div>
-      <div>
-        <span class="mono">based</span>
-        <p>remote&nbsp;·&nbsp;worldwide</p>
-      </div>
-    </div>
-    <div class="footer__base">
-      <span class="mono">© <span id="year"></span> muhsingraphy</span>
-      <span class="mono">designed&nbsp;&amp;&nbsp;built&nbsp;with&nbsp;intent</span>
     </div>
   </footer>
 
