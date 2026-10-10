@@ -1,8 +1,8 @@
 # AGENTS.md — muhsingraphy
 
 ## Repo
-- GitHub: `heyy-ashii/muhsingraphy` (public). Default branch `main`; work happens on `OpenHand`.
-- Static multi-page site, no build step.
+- GitHub: `heyy-ashii/muhsingraphy` (public). Work happens on `OpenHand`.
+- Static multi-page site, **no build step, no npm dependencies**. Keep it that way.
 
 ## Run / preview
 ```bash
@@ -12,33 +12,40 @@ python -m http.server 8899   # http://localhost:8899
 ## Pages
 | File | Figma frame |
 |---|---|
-| `index.html` | Muhsingraphy — Homepage (1440×6014) |
-| `shop.html` | Muhsingraphy — Shop (1440×2073) |
-| `original-calligraphy.html` | Muhsingraphy — Original calligraphy (1440×2654) |
-| `fine-art-print.html` | Muhsingraphy — Fine-art print (1440×2672) |
-| `admin.html` | Muhsingraphy — Admin overview (1440×1133) |
+| `index.html` | Homepage |
+| `shop.html` | Shop / collection |
+| `original-calligraphy.html` | Original calligraphy |
+| `fine-art-print.html` | Fine-art print |
+| `admin.html` | Admin overview |
 
-Shared: `styles.css`, `script.js`, `assets/artwork.jpg` (the supplied artwork).
+## Scripts (load order matters)
+1. `supabase-config.js` — public config, **placeholders only**
+2. `store.js` — dependency-free PostgREST + Supabase Auth client
+3. `script.js` — UI interactions (tabs, FAQ, filters, qty)
+4. `hydrate.js` — replaces static content with live data *when configured*
 
 ## Design source
-- Figma file `MVhsQ2DLjUmlIwpaS7Vy7t` ("Untitled"). Built from the real file via the
-  Figma REST API (personal access token with `file_read`).
-- Fonts: display `Lora` (400), body `Inter` (400/500), via Google Fonts.
-- Palette (sampled from the file):
-  `--ink #163c3d`, `--sage #69726c`, `--rule #d5d8ce`, `--rule-dark #46605b`,
-  `--paper #fdfcf8`, `--paper-2 #eeece4`, `--mist #e3e8df`,
-  `--on-ink #f7f5ef`, `--on-ink-dim #e9eee5`, `--amber #896131`.
-- Layout: 1440px max, 32px gutter (`--gut`), hairline `1px #d5d8ce` rules.
-- Recurring motifs: uppercase 11px labels, `↗` link arrows, arrow-right buttons.
+Figma `MVhsQ2DLjUmlIwpaS7Vy7t`. Display `Lora`, body `Inter`.
+Palette: ink `#163c3d`, sage `#69726c`, rule `#d5d8ce` / `#46605b`,
+paper `#fdfcf8`, paper-2 `#eeece4`, mist `#e3e8df`, on-ink `#f7f5ef` /
+`#e9eee5`, amber `#896131`. Layout 1440px, 32px gutter.
 
-## Notes / limitations
-- This is a **concept preview**: much copy is explicitly "to be confirmed", prices are
-  samples in USD, and the same supplied image is reused for artwork, detail crop and the
-  print. Swap in real asset variants when available.
-- Cart, filters, tabs and the FAQ accordion are client-side only — no backend.
-- `admin.html` is a demo workspace (sample data).
+## Data / backend
+- Supabase, **Option A: static + RLS**. Schema + policies in `supabase/schema.sql`.
+- Public catalogue reads use the **publishable key**. Guest orders insert
+  directly under an insert-only RLS policy. Admin reads require a signed-in
+  user listed in `public.admin_user`.
+- **Never** put the secret key (`sb_secret_…`) in a client file, `.env`, or this
+  repo. It bypasses RLS. Privileged work belongs in an Edge Function.
+- `hydrate.js` must stay **fail-open**: if Supabase is absent or unreachable,
+  log a warning and leave the static markup in place. A visitor must never see a
+  broken page because the backend is down.
 
 ## Conventions
-- Vanilla HTML/CSS/JS only. Reveal-on-scroll via `IntersectionObserver`; respect
-  `prefers-reduced-motion`.
-- Keep content changes aligned with the Figma file where possible.
+- Vanilla HTML/CSS/JS only; no frameworks, no bundler.
+- Escape all interpolated data (`esc()` in `hydrate.js`) — never `innerHTML` raw.
+- Respect `prefers-reduced-motion`.
+
+## Content caveat
+Concept preview: prices are sample USD values, much copy is "to be confirmed",
+and one image is reused for artwork / detail / print. `admin.html` uses demo data.
