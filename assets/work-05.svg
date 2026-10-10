@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 800" role="img">
+  <rect width="1600" height="800" fill="#f6f5ee"/>
+  <g fill="none" stroke="#0f0d0c" stroke-width="3">
+    <ellipse cx="800" cy="400" rx="620" ry="240"/>
+    <ellipse cx="800" cy="400" rx="620" ry="150" transform="rotate(24 800 400)"/>
+    <ellipse cx="800" cy="400" rx="620" ry="150" transform="rotate(-24 800 400)"/>
+  </g>
+  <circle cx="800" cy="400" r="90" fill="#0f0d0c"/>
+  <circle cx="800" cy="400" r="26" fill="#f6f5ee"/>
+  <text x="60" y="90" font-family="monospace" font-size="22" fill="#8d8a82" letter-spacing="6">CAMPAIGN / 05</text>
+  <text x="1540" y="760" text-anchor="end" font-family="Arial Narrow, sans-serif" font-weight="bold" font-size="90" fill="#0f0d0c" letter-spacing="4">ORBIT</text>
+</svg>
