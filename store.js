@@ -345,8 +345,11 @@
           const ok = payload.status === "ok";
           const detail = JSON.stringify(payload.response || {});
           // A successful join can still carry a per-table subscription
-          // error (e.g. table not in the realtime publication).
-          if (ok && !/error/i.test(detail)) {
+          // error (e.g. table not in the realtime publication). Match
+          // "Unable to subscribe" specifically: an `"errors": null`
+          // field is not a failure.
+          const refused = /unable to subscribe/i.test(detail) || /"errors"\s*:\s*\[/.test(detail);
+          if (ok && !refused) {
             retry = 0;
             setStatus("live");
           } else {
@@ -362,9 +365,15 @@
           return;
         }
         if (msg.event === "postgres_changes") {
-          const table = (payload.table || topic.split(":").pop() || "").trim();
+          // Current Realtime protocol nests the change under payload.data
+          // (table/record/columns); older builds put them on payload
+          // directly. Read both so a protocol revision cannot silently
+          // stop delivery — which is how this line was first written.
+          const data = payload.data || payload;
+          const table = (data.table || payload.table || topic.split(":").pop() || "").trim();
+          const record = data.record || data.new || payload.record || payload.new || {};
           const handlers = tableListeners.get(table);
-          if (handlers) handlers.forEach((fn) => fn(payload.record || payload.new || {}));
+          if (handlers) handlers.forEach((fn) => fn(record));
         }
       };
 
