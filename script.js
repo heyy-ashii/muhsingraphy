@@ -1,59 +1,96 @@
-// Reveal-on-scroll, staggering grouped elements as they enter.
-const revealed = document.querySelectorAll('.reveal');
-
+// ── reveal on scroll ────────────────────────────────────────
 const io = new IntersectionObserver(
   (entries) => {
-    for (const entry of entries) {
-      if (!entry.isIntersecting) continue;
-      const parent = entry.target.parentElement;
+    for (const e of entries) {
+      if (!e.isIntersecting) continue;
+      const parent = e.target.parentElement;
       const peers = parent ? [...parent.querySelectorAll(':scope > .reveal')] : [];
-      const order = Math.max(0, peers.indexOf(entry.target));
-      entry.target.style.transitionDelay = `${Math.min(order, 6) * 70}ms`;
-      entry.target.classList.add('is-in');
-      io.unobserve(entry.target);
+      const order = Math.max(0, peers.indexOf(e.target));
+      e.target.style.transitionDelay = `${Math.min(order, 5) * 70}ms`;
+      e.target.classList.add('is-in');
+      io.unobserve(e.target);
     }
   },
-  { threshold: 0.12, rootMargin: '0px 0px -8% 0px' }
+  { threshold: 0.1, rootMargin: '0px 0px -6% 0px' }
 );
-revealed.forEach((el) => io.observe(el));
+document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
 
-// Hero enters immediately on load.
-window.addEventListener('load', () => {
-  document.querySelectorAll('.hero .reveal').forEach((el, i) => {
-    el.style.transitionDelay = `${i * 90}ms`;
-    el.classList.add('is-in');
+// ── FAQ accordion ───────────────────────────────────────────
+document.querySelectorAll('.faq__item').forEach((item) => {
+  const q = item.querySelector('.faq__q');
+  const sign = item.querySelector('.faq__sign');
+  q?.addEventListener('click', () => {
+    const open = item.classList.toggle('is-open');
+    q.setAttribute('aria-expanded', String(open));
+    if (sign) sign.textContent = open ? '−' : '+';
   });
 });
 
-// Index rows scroll to their project.
-document.querySelectorAll('.index__item').forEach((item) => {
-  const go = () => {
-    const target = document.getElementById(item.dataset.goto);
-    target?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  };
-  item.addEventListener('click', go);
-  item.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); }
+// ── product tabs ────────────────────────────────────────────
+const tabs = document.querySelectorAll('.pdp__tab');
+const panels = document.querySelectorAll('.pdp__panel');
+tabs.forEach((tab) => {
+  tab.addEventListener('click', () => {
+    tabs.forEach((t) => t.setAttribute('aria-selected', String(t === tab)));
+    panels.forEach((p) => p.classList.toggle('is-active', p.dataset.panel === tab.dataset.tab));
   });
-  item.tabIndex = 0;
-  item.setAttribute('role', 'button');
 });
 
-// Highlight the project currently in view within the index.
-const pairs = [...document.querySelectorAll('.project')]
-  .map((p) => [p, document.querySelector(`.index__item[data-goto="${p.id}"]`)])
-  .filter(([, row]) => row);
+// ── gallery thumbnails ──────────────────────────────────────
+document.querySelectorAll('.pdp__thumbs button').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    const hero = document.getElementById('pdp-hero');
+    if (hero) hero.src = btn.dataset.src;
+    document.querySelectorAll('.pdp__thumbs button').forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
+    const label = document.getElementById('pdp-view-label');
+    if (label) label.textContent = btn.querySelector('img')?.alt ?? '';
+  });
+});
 
-const spy = new IntersectionObserver(
-  (entries) => {
-    for (const entry of entries) {
-      const row = pairs.find(([p]) => p === entry.target)?.[1];
-      if (!row) continue;
-      row.style.opacity = entry.isIntersecting ? '1' : '0.45';
-    }
-  },
-  { threshold: 0.5 }
-);
-pairs.forEach(([p]) => spy.observe(p));
+// ── size selection updates price ────────────────────────────
+const priceEl = document.querySelector('[data-price]');
+document.querySelectorAll('input[name="size"]').forEach((input) => {
+  input.addEventListener('change', () => {
+    if (priceEl) priceEl.textContent = `$${input.dataset.sizePrice}`;
+  });
+});
 
-document.getElementById('year').textContent = new Date().getFullYear();
+// ── quantity stepper ────────────────────────────────────────
+document.querySelectorAll('[data-qty]').forEach((box) => {
+  const value = box.querySelector('[data-qty-value]');
+  box.querySelectorAll('[data-step]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const next = Math.max(1, (parseInt(value.textContent, 10) || 1) + Number(btn.dataset.step));
+      value.textContent = String(next);
+    });
+  });
+});
+
+// ── add to cart (preview only — no cart backend) ────────────
+const cartCount = document.querySelector('.cart');
+document.querySelectorAll('[data-add-to-cart]').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    const qty = document.querySelector('[data-qty-value]')?.textContent ?? '1';
+    btn.textContent = `Added ${qty} — preview only`;
+    if (cartCount) cartCount.innerHTML = cartCount.innerHTML.replace(/Cart \(\d+\)/, `Cart (${qty})`);
+    setTimeout(() => (btn.textContent = 'Add to cart'), 2200);
+  });
+});
+
+// ── shop filters ────────────────────────────────────────────
+const chips = document.querySelectorAll('.chip[data-filter]');
+const cards = document.querySelectorAll('#grid .card');
+chips.forEach((chip) => {
+  chip.addEventListener('click', () => {
+    const filter = chip.dataset.filter;
+    chips.forEach((c) => c.setAttribute('aria-pressed', String(c === chip)));
+    let shown = 0;
+    cards.forEach((card) => {
+      const match = filter === 'all' || card.dataset.kind === filter;
+      card.style.display = match ? '' : 'none';
+      if (match) shown++;
+    });
+    const count = document.getElementById('offering-count');
+    if (count) count.textContent = `${shown} offering${shown === 1 ? '' : 's'}`;
+  });
+});

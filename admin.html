@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Overview — Muhsingraphy Studio admin</title>
+  <meta name="description" content="Studio admin overview — collection, orders and studio at a glance. Demo workspace." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="admin">
+    <!-- ── sidebar ───────────────────────────────────────── -->
+    <aside class="admin__side">
+      <div class="admin__brand">
+        <h1>Muhsingraphy</h1>
+        <p>Studio / Admin</p>
+      </div>
+      <ul class="admin__nav">
+        <li><a href="admin.html" aria-current="page">Overview</a></li>
+        <li><a href="#">Orders <span class="count">3</span></a></li>
+        <li><a href="#">Products</a></li>
+        <li><a href="#">Inventory</a></li>
+        <li><a href="#">Website content</a></li>
+        <li><a href="#">Customers</a></li>
+        <li><a href="#">Settings</a></li>
+      </ul>
+      <div class="admin__side-foot">
+        <a href="index.html">View storefront</a>
+        <p class="fine" style="font-size:11px;color:var(--sage);margin-top:0.5rem">Portfolio &amp; collection preview</p>
+        <div class="ws">
+          <span class="admin__mark">M</span>
+          <p>Studio admin<small>Demo workspace</small></p>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ── main ──────────────────────────────────────────── -->
+    <main class="admin__main">
+      <div class="admin__top">
+        <span class="crumb">Studio / <b>Overview</b></span>
+        <span class="tools">
+          <span>Demo data</span>
+          <span>Search the studio</span>
+        </span>
+      </div>
+
+      <div class="admin__head">
+        <div>
+          <h1 class="display">Overview</h1>
+          <p>Your collection, orders and studio — at a glance.</p>
+        </div>
+        <div class="actions">
+          <span class="date-pill">Sep 1 – 30, 2026</span>
+          <a class="btn btn--solid" href="shop.html" style="min-height:40px">Add product</a>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="stat">
+          <span class="label">Total sales</span>
+          <span class="v">$1,285</span>
+          <p class="d">↑ 27.2% <span>vs. previous month</span></p>
+        </div>
+        <div class="stat">
+          <span class="label">Orders</span>
+          <span class="v">12</span>
+          <p class="d">↑ 20.0% <span>vs. previous month</span></p>
+        </div>
+        <div class="stat">
+          <span class="label">Average order value</span>
+          <span class="v">$107.08</span>
+          <p class="d">↑ 6.0% <span>vs. previous month</span></p>
+        </div>
+        <div class="stat">
+          <span class="label">Awaiting fulfilment</span>
+          <span class="v">3</span>
+          <p class="d">View orders ↗</p>
+        </div>
+      </div>
+
+      <div class="admin__cols">
+        <div>
+          <!-- sales chart -->
+          <section class="panel">
+            <div class="panel__head">
+              <div>
+                <h2>Sales trend</h2>
+                <p class="note">Weekly sales · September 2026</p>
+              </div>
+              <a class="link" href="#">View report ↗</a>
+            </div>
+            <div class="chart" role="img" aria-label="Weekly sales: Sep 1–7 $130, Sep 8–14 $190, Sep 15–21 $645, Sep 22–30 $320">
+              <div class="chart__y"><span>$800</span><span>$600</span><span>$400</span><span>$200</span><span>$0</span></div>
+              <div class="chart__bar"><span class="val">$130</span><div class="col" style="--h:16%"><div class="fill" style="--fill:100%"></div></div><span class="lbl">Sep 1–7</span></div>
+              <div class="chart__bar"><span class="val">$190</span><div class="col" style="--h:24%"><div class="fill" style="--fill:100%"></div></div><span class="lbl">Sep 8–14</span></div>
+              <div class="chart__bar"><span class="val">$645</span><div class="col" style="--h:81%"><div class="fill" style="--fill:100%"></div></div><span class="lbl">Sep 15–21</span></div>
+              <div class="chart__bar"><span class="val">$320</span><div class="col" style="--h:40%"><div class="fill" style="--fill:100%"></div></div><span class="lbl">Sep 22–30</span></div>
+            </div>
+            <div class="chart__legend">
+              <span><i class="legend-a"></i>Original</span>
+              <span><i class="legend-b"></i>Prints</span>
+              <span style="margin-left:auto">1 original + 11 prints · Sales exclude shipping and tax.</span>
+            </div>
+          </section>
+
+          <!-- orders -->
+          <section class="panel" style="margin-top:1.5rem">
+            <div class="panel__head">
+              <h2>Recent orders</h2>
+              <a class="link" href="#">All orders ↗</a>
+            </div>
+            <table class="orders">
+              <thead>
+                <tr><th>Order</th><th>Customer</th><th>Product</th><th class="total">Total</th><th>Fulfilment</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>#M1012<span class="sub">Sep 30</span></td>
+                  <td>Amina K.</td>
+                  <td>Fine-art print · 40 × 30 cm</td>
+                  <td class="total">$65</td>
+                  <td><span class="badge">Awaiting fulfilment</span></td>
+                </tr>
+                <tr>
+                  <td>#M1011<span class="sub">Sep 28</span></td>
+                  <td>Daniel R.</td>
+                  <td>Fine-art print · 60 × 45 cm</td>
+                  <td class="total">$95</td>
+                  <td><span class="badge">Awaiting fulfilment</span></td>
+                </tr>
+                <tr>
+                  <td>#M1010<span class="sub">Sep 25</span></td>
+                  <td>Sara H.</td>
+                  <td>Fine-art print · 40 × 30 cm</td>
+                  <td class="total">$65</td>
+                  <td><span class="badge">Awaiting fulfilment</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+        </div>
+
+        <!-- quick actions -->
+        <aside class="panel tile-ink">
+          <h2>Your studio, in motion.</h2>
+          <span class="label" style="display:block;margin-top:0.5rem">Quick actions</span>
+          <ul class="quick">
+            <li><a href="shop.html"><strong>Add a product</strong><span>Create an original or print listing</span></a></li>
+            <li><a href="#"><strong>Manage artwork</strong><span>Organise images and gallery details</span></a></li>
+            <li><a href="#"><strong>Edit website content</strong><span>Update the homepage and artist story</span></a></li>
+          </ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
