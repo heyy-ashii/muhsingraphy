@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>muhsingraphy — The quiet power of a single stroke.</title>
+  <meta name="description" content="muhsingraphy — graphic design, brand identity and typography." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Anton&family=Manrope:wght@400;500;600;800&family=Space+Mono:wght@400;700&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- ── top bar ─────────────────────────────────────────── -->
+  <header class="topbar">
+    <a class="wordmark" href="#top">muhsingraphy</a>
+    <nav class="topbar__nav">
+      <a href="#work">work</a>
+      <a href="#studio">studio</a>
+      <a href="#contact">contact</a>
+    </nav>
+    <a class="topbar__status" href="#contact">
+      <span class="dot"></span>available&nbsp;for&nbsp;work
+    </a>
+  </header>
+
+  <main id="top">
+    <!-- ── hero ──────────────────────────────────────────── -->
+    <section class="hero">
+      <div class="hero__label reveal">
+        <span class="mono">graphic&nbsp;design</span>
+        <span class="mono">/&nbsp;brand&nbsp;identity</span>
+        <span class="mono">/&nbsp;typography</span>
+      </div>
+
+      <div class="hero__grid">
+        <h1 class="hero__title reveal">
+          The quiet<br />
+          power of a<br />
+          single <em>stroke.</em>
+        </h1>
+
+        <figure class="hero__mark reveal" aria-hidden="true">
+          <div class="hero__mark-inner">
+            <span>m</span>
+          </div>
+          <figcaption class="mono">fig.&nbsp;00 — mark</figcaption>
+        </figure>
+      </div>
+
+      <p class="hero__lede reveal">
+        I'm a graphic designer building brand systems, type and print that
+        say more with less — used by people who'd rather be remembered than
+        noticed.
+      </p>
+    </section>
+
+    <!-- ── ticker ────────────────────────────────────────── -->
+    <div class="ticker" aria-hidden="true">
+      <div class="ticker__track">
+        <span>brand identity</span><span>*</span><span>typography</span><span>*</span>
+        <span>poster&nbsp;&&nbsp;print</span><span>*</span><span>packaging</span><span>*</span>
+        <span>art direction</span><span>*</span><span>brand identity</span><span>*</span>
+        <span>typography</span><span>*</span><span>poster&nbsp;&&nbsp;print</span><span>*</span>
+        <span>packaging</span><span>*</span><span>art direction</span><span>*</span>
+      </div>
+    </div>
+
+    <!-- ── work ──────────────────────────────────────────── -->
+    <section class="work" id="work">
+      <div class="work__head">
+        <span class="mono">01</span>
+        <h2 class="work__title">Selected&nbsp;work</h2>
+        <span class="mono work__count">— 05 projects</span>
+      </div>
+
+      <div class="work__layout">
+        <!-- numbered index -->
+        <ol class="index">
+          <li class="index__item reveal" data-goto="p1">
+            <span class="mono index__num">01</span>
+            <span class="index__name">axion</span>
+            <span class="mono index__cat">identity</span>
+          </li>
+          <li class="index__item reveal" data-goto="p2">
+            <span class="mono index__num">02</span>
+            <span class="index__name">mono</span>
+            <span class="mono index__cat">poster&nbsp;series</span>
+          </li>
+          <li class="index__item reveal" data-goto="p3">
+            <span class="mono index__num">03</span>
+            <span class="index__name">bloom</span>
+            <span class="mono index__cat">packaging</span>
+          </li>
+          <li class="index__item reveal" data-goto="p4">
+            <span class="mono index__num">04</span>
+            <span class="index__name">nightline</span>
+            <span class="mono index__cat">visual&nbsp;system</span>
+          </li>
+          <li class="index__item reveal" data-goto="p5">
+            <span class="mono index__num">05</span>
+            <span class="index__name">orbit</span>
+            <span class="mono index__cat">campaign</span>
+          </li>
+        </ol>
+
+        <!-- project grid -->
+        <div class="projects">
+          <article class="project reveal" id="p1">
+            <div class="project__media"><img src="assets/work-01.svg" alt="axion — brand identity" loading="lazy" /></div>
+            <div class="project__cap"><span class="mono">01</span><h3>axion</h3><span class="mono">2025</span></div>
+          </article>
+          <article class="project reveal" id="p2">
+            <div class="project__media"><img src="assets/work-02.svg" alt="mono — poster series" loading="lazy" /></div>
+            <div class="project__cap"><span class="mono">02</span><h3>mono</h3><span class="mono">2025</span></div>
+          </article>
+          <article class="project reveal" id="p3">
+            <div class="project__media"><img src="assets/work-03.svg" alt="bloom — packaging" loading="lazy" /></div>
+            <div class="project__cap"><span class="mono">03</span><h3>bloom</h3><span class="mono">2024</span></div>
+          </article>
+          <article class="project reveal" id="p4">
+            <div class="project__media"><img src="assets/work-04.svg" alt="nightline — visual system" loading="lazy" /></div>
+            <div class="project__cap"><span class="mono">04</span><h3>nightline</h3><span class="mono">2024</span></div>
+          </article>
+          <article class="project project--wide reveal" id="p5">
+            <div class="project__media"><img src="assets/work-05.svg" alt="orbit — campaign" loading="lazy" /></div>
+            <div class="project__cap"><span class="mono">05</span><h3>orbit</h3><span class="mono">2023</span></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── studio / statement ────────────────────────────── -->
+    <section class="studio" id="studio">
+      <div class="studio__head">
+        <span class="mono">02</span>
+        <h2 class="work__title">Studio</h2>
+      </div>
+      <div class="studio__body">
+        <p class="studio__statement reveal">
+          A practice built on <em>restraint</em> — finding the one line,
+          the one mark, the one typeface that carries the whole idea.
+        </p>
+        <div class="studio__cols">
+          <div class="studio__col reveal">
+            <span class="mono">approach</span>
+            <p>Start with the idea, never the filter. Every shape earns its place or it leaves.</p>
+          </div>
+          <div class="studio__col reveal">
+            <span class="mono">services</span>
+            <p>Brand identity, typography, poster &amp; print, packaging, art direction.</p>
+          </div>
+          <div class="studio__col reveal">
+            <span class="mono">working</span>
+            <p>Available for freelance and select collaborations worldwide.</p>
+          </div>
+        </div>
+        <span class="studio__mark" aria-hidden="true">*</span>
+      </div>
+    </section>
+  </main>
+
+  <!-- ── footer ──────────────────────────────────────────── -->
+  <footer class="footer" id="contact">
+    <div class="footer__cta">
+      <span class="mono footer__kicker">got a project?</span>
+      <a class="footer__mail" href="mailto:hello@muhsingraphy.com">
+        let's&nbsp;talk&nbsp;→
+      </a>
+    </div>
+    <div class="footer__grid">
+      <div>
+        <span class="mono">say&nbsp;hi</span>
+        <a href="mailto:hello@muhsingraphy.com">hello@muhsingraphy.com</a>
+      </div>
+      <div>
+        <span class="mono">elsewhere</span>
+        <a href="https://www.instagram.com/muhsingraphy" target="_blank" rel="noopener">instagram</a>
+        <a href="#" aria-disabled="true">behance</a>
+        <a href="#" aria-disabled="true">dribbble</a>
+      </div>
+      <div>
+        <span class="mono">based</span>
+        <p>remote&nbsp;·&nbsp;worldwide</p>
+      </div>
+    </div>
+    <div class="footer__base">
+      <span class="mono">© <span id="year"></span> muhsingraphy</span>
+      <span class="mono">designed&nbsp;&amp;&nbsp;built&nbsp;with&nbsp;intent</span>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
